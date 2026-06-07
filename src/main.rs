@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 use std::convert::Infallible;
-use std::fs::OpenOptions;
+use std::fs::{File, OpenOptions};
 use std::io::{BufWriter, Read, Write};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use ahash::AHashMap;
 use base64_simd::STANDARD;
@@ -14,6 +14,14 @@ use url::{Host, Url};
 use ip_replacement::model::{Config, Subscription};
 
 const DEFAULT_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), '/', env!("CARGO_PKG_VERSION"));
+
+fn open_file(path: impl AsRef<Path>) -> std::io::Result<File> {
+    OpenOptions::new()
+        .create(true)
+        .truncate(true)
+        .write(true)
+        .open(path.as_ref())
+}
 
 fn main() -> Result<()> {
     color_eyre::install()?;
@@ -40,22 +48,12 @@ fn main() -> Result<()> {
     } in config.subscription
     {
         let yaml_path = sub_dir.join(&name).with_extension("yaml");
+        let js_path = sub_dir.join(&name).with_extension("js");
         let sub_path = sub_dir.join(&name).with_extension("sub");
 
-        let mut yaml_file = BufWriter::new(
-            OpenOptions::new()
-                .create(true)
-                .truncate(true)
-                .write(true)
-                .open(&yaml_path)?,
-        );
-        let mut sub_file = BufWriter::new(
-            OpenOptions::new()
-                .create(true)
-                .truncate(true)
-                .write(true)
-                .open(&sub_path)?,
-        );
+        let mut yaml_file = BufWriter::new(open_file(&yaml_path)?);
+        let mut js_file = BufWriter::new(open_file(&js_path)?);
+        let mut sub_file = BufWriter::new(open_file(&sub_path)?);
 
         let request = Request::<Infallible>::get(url).with_header(
             USER_AGENT,
@@ -92,15 +90,20 @@ fn main() -> Result<()> {
         );
 
         writeln!(yaml_file, "hosts:")?;
+        writeln!(
+            js_file,
+            "const main = (config) => {{
+  config.hosts ??= {{}};"
+        )?;
+
         for (host, ip) in &hosts_map {
             writeln!(yaml_file, "    {host}: \"{ip}\"")?;
+            writeln!(js_file, "  config.hosts['{host}'] = \"{ip}\";")?;
         }
 
-        eprintln!(
-            "{}: wrote {} host pairs",
-            yaml_path.to_string_lossy(),
-            hosts_map.len()
-        );
+        writeln!(js_file, "}};")?;
+
+        eprintln!("{name}: wrote {} host pairs", hosts_map.len());
     }
 
     Ok(())
