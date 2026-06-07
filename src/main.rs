@@ -47,11 +47,9 @@ fn main() -> Result<()> {
         ip,
     } in config.subscription
     {
-        let yaml_path = sub_dir.join(&name).with_extension("yaml");
         let js_path = sub_dir.join(&name).with_extension("flclash.js");
         let sub_path = sub_dir.join(&name).with_extension("sub");
 
-        let mut yaml_file = BufWriter::new(open_file(&yaml_path)?);
         let mut js_file = BufWriter::new(open_file(&js_path)?);
         let mut sub_file = BufWriter::new(open_file(&sub_path)?);
 
@@ -89,7 +87,6 @@ fn main() -> Result<()> {
             sub_path.to_string_lossy(),
         );
 
-        writeln!(yaml_file, "hosts:")?;
         writeln!(
             js_file,
             "const main = (config) => {{
@@ -97,7 +94,6 @@ fn main() -> Result<()> {
         )?;
 
         for (host, ip) in &hosts_map {
-            writeln!(yaml_file, "    {host}: \"{ip}\"")?;
             writeln!(js_file, "  config.hosts['{host}'] = \"{ip}\";")?;
         }
 
@@ -107,7 +103,11 @@ fn main() -> Result<()> {
 }};"
         )?;
 
-        eprintln!("[{name}]: wrote {} host pairs", hosts_map.len());
+        eprintln!(
+            "{}: written {} host pairs",
+            js_path.to_string_lossy(),
+            hosts_map.len()
+        );
     }
 
     Ok(())

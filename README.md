@@ -3,7 +3,6 @@
 Fetch SIP002 subscriptions, replace server hostnames with a specified IP address, and generate:
 
 * A rewritten `.sub` subscription file
-* A YAML host mapping file
 * A FlClash hosts overwriting script
 
 This is useful when DNS resolution is unreliable, blocked, or intentionally bypassed.
