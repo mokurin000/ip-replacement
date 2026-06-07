@@ -1,0 +1,9 @@
+[[subscription]]
+name = "flower-cloud"
+url = "https://www.baidu.com/index.html"
+ip = "8.8.8.8"
+
+[[subscription]]
+name = "v6-cloud"
+url = "https://www.baidu.com/index.html"
+ip = "[::1]"

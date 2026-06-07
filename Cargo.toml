@@ -1,0 +1,11 @@
+[package]
+name = "ip-replacement"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+color-eyre = "0.6.5"
+nyquest = { version = "0.4.0", features = ["blocking"] }
+nyquest-preset = { version = "0.4.0", features = ["blocking"] }
+serde = { version = "1.0.228", features = ["derive"] }
+soml = { version = "0.2.0", default-features = false, features = ["strict", "std"] }
