@@ -48,7 +48,7 @@ fn main() -> Result<()> {
     } in config.subscription
     {
         let yaml_path = sub_dir.join(&name).with_extension("yaml");
-        let js_path = sub_dir.join(&name).with_extension("js");
+        let js_path = sub_dir.join(&name).with_extension("flclash.js");
         let sub_path = sub_dir.join(&name).with_extension("sub");
 
         let mut yaml_file = BufWriter::new(open_file(&yaml_path)?);
@@ -101,9 +101,13 @@ fn main() -> Result<()> {
             writeln!(js_file, "  config.hosts['{host}'] = \"{ip}\";")?;
         }
 
-        writeln!(js_file, "}};")?;
+        writeln!(
+            js_file,
+            "  return config;
+}};"
+        )?;
 
-        eprintln!("{name}: wrote {} host pairs", hosts_map.len());
+        eprintln!("[{name}]: wrote {} host pairs", hosts_map.len());
     }
 
     Ok(())
