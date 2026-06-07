@@ -4,8 +4,13 @@ Fetch SIP002 subscriptions, replace server hostnames with a specified IP address
 
 * A rewritten `.sub` subscription file
 * A YAML host mapping file
+* A FlClash hosts overwriting script
 
 This is useful when DNS resolution is unreliable, blocked, or intentionally bypassed.
+
+## Mihomo
+
+Follow [虚空终端 Docs](https://wiki.metacubex.one/config/dns/hosts/).
 
 ## Features
 
