@@ -7,10 +7,11 @@ use std::path::PathBuf;
 use ahash::AHashMap;
 use base64_simd::STANDARD;
 use color_eyre::eyre::Result;
-use ip_replacement::model::{Config, Subscription};
 use nyquest::header::USER_AGENT;
 use nyquest::{ClientBuilder, Request};
 use url::{Host, Url};
+
+use ip_replacement::model::{Config, Subscription};
 
 const DEFAULT_USER_AGENT: &str = concat!(env!("CARGO_PKG_NAME"), '/', env!("CARGO_PKG_VERSION"));
 
