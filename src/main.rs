@@ -75,6 +75,13 @@ fn main() -> Result<()> {
             let mut url = Url::parse(line)?;
             let host = url.host().as_ref().map(Host::to_string).unwrap_or_default();
             if !matches!(&*host, "www.google.com" | "www.g00gle.com") {
+                if let Some(fragment) = url.fragment() {
+                    eprintln!(
+                        "{}: {ip}",
+                        percent_encoding::percent_decode_str(fragment).decode_utf8_lossy()
+                    );
+                }
+
                 hosts_map.entry(host).insert_entry(ip.clone());
             }
             url.set_host(Some(&ip))?;

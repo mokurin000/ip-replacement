@@ -23,6 +23,7 @@ ahash = { version = "0.8.12", default-features = false, features = [
     "no-rng",
     "std",
 ] }
+percent-encoding = "2.3.2"
 
 [profile.release]
 opt-level = "s"

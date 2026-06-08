@@ -321,6 +321,7 @@ dependencies = [
  "color-eyre",
  "nyquest",
  "nyquest-preset",
+ "percent-encoding",
  "serde",
  "soml",
  "url",
